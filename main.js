@@ -56,6 +56,8 @@
 
       if (timeout <= 0) {
         clearInterval(intervalId);
+        updateDisplay(0);
+        elapsedTime = 0;
         start.disabled = true;
         stop.disabled = true;
         stop.classList.add("clear");
@@ -118,6 +120,7 @@
     if (s >= 60) {
       s = 0;
       m++
+      
     }
 
     if (m >= 60) {
