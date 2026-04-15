@@ -4,9 +4,9 @@
   const start = document.getElementById("start");
   const stop = document.getElementById("stop");
   const reset = document.getElementById("reset");
-  
+
   stop.classList.add("clear");
-  
+
   const audio = new Audio("Cuckoo_Clock01-02(Denoise-Mid).mp3");
 
   const hoursInput = document.getElementById("hours");
@@ -21,8 +21,6 @@
   const secondsDown = document.getElementById("seconds-down");
 
   let intervalId;
-  let endTime;//←消す
-  let timeout;//←消す
   let elapsedTime = 0;
   let initialTime = 0;
 
@@ -41,11 +39,11 @@
   //-----ボタン操作用の処理----------------------------------
   function getFromSeconds(totalSeconds) {
     const hh = Math.floor(totalSeconds / 3600);
-    const mm = Math.floor((totalSeconds % 3600) / 60); 
+    const mm = Math.floor((totalSeconds % 3600) / 60);
     const ss = totalSeconds % 60;
 
-    hoursInput.value = String(hh).padStart(2, "0"); 
-    minutesInput.value = String(mm).padStart(2, "0"); 
+    hoursInput.value = String(hh).padStart(2, "0");
+    minutesInput.value = String(mm).padStart(2, "0");
     secondsInput.value = String(ss).padStart(2, "0");
   }
 
@@ -72,13 +70,20 @@
 
     if (elapsedTime === 0) {
       initialTime = getTotalTime();
-      endTime = Date.now() + initialTime;
-    } else {
-      endTime = Date.now() + elapsedTime;
-    }
+      if (initialTime <= 0) {
+        start.disabled = false;
+        stop.disabled = true;
+        start.classList.remove("clear");
+        stop.classList.add("clear");
+        return;
+      }
+      elapsedTime = initialTime;
+    } 
+
+    const endTime = Date.now() + elapsedTime;
 
     intervalId = setInterval(() => {
-      timeout = endTime - Date.now();
+      const timeout = endTime - Date.now();
 
       if (timeout <= 0) {
         clearInterval(intervalId);
@@ -87,9 +92,9 @@
         start.disabled = true;
         stop.disabled = true;
         stop.classList.add("clear");
+        timer.classList.add("finish");
         audio.currentTime = 0;
         audio.play();
-        timer.classList.add("finish");
         return;
       }
 
@@ -126,7 +131,6 @@
     start.classList.remove("clear");
     timer.classList.remove("finish");
   });
-
 }
 
 //・stop中に数値の変更
