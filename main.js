@@ -36,18 +36,7 @@
     return Math.floor(getTotalTime() / 1000);
   }
 
-  //-----ボタン操作用の処理----------------------------------
-  function getFromSeconds(totalSeconds) {
-    const hh = Math.floor(totalSeconds / 3600);
-    const mm = Math.floor((totalSeconds % 3600) / 60);
-    const ss = totalSeconds % 60;
-
-    hoursInput.value = String(hh).padStart(2, "0");
-    minutesInput.value = String(mm).padStart(2, "0");
-    secondsInput.value = String(ss).padStart(2, "0");
-  }
-
-  //-----タイマー表示用の処理----------------------------------
+    //-----タイマー表示用の処理----------------------------------
   function updateDisplay(ms) {
     const totalSec = Math.floor(ms / 1000);
     const hh = Math.floor(totalSec / 3600);
@@ -59,14 +48,60 @@
     secondsInput.value = String(ss).padStart(2, "0");
   }
 
-  //--------------------------------------------------------------・一旦ここまで
+  //-----ボタン操作用の処理----------------------------------
+  function setFromSeconds(totalSeconds) {
+    const hh = Math.floor(totalSeconds / 3600);
+    const mm = Math.floor((totalSeconds % 3600) / 60);
+    const ss = totalSeconds % 60;
 
+    hoursInput.value = String(hh).padStart(2, "0");
+    minutesInput.value = String(mm).padStart(2, "0");
+    secondsInput.value = String(ss).padStart(2, "0");
+  }
+
+  function changeTime(diff) {
+    let total = getSeconds();
+    total += diff;
+
+    if (total < 0) {
+      total = 0;
+    }
+
+    setFromSeconds(total);
+    elapsedTime = total * 1000;
+
+    timer.classList.remove("finish");
+  }
+
+  function setupHold(button, diff) {
+    let holdIntervalId;
+
+    const startHold = () => {
+      changeTime(diff);
+
+      holdIntervalId = setInterval(() => {
+        changeTime(diff);
+      }, 100);
+    };
+
+    const stopHold =  () => {
+      clearInterval(holdIntervalId);
+    };
+
+    button.addEventListener('mousedown', startHold);
+    button.addEventListener('mouseup', stopHold);
+    button.addEventListener('mouseleave', stopHold);
+    document.addEventListener('mouseup', stopHold);
+  }
+
+  //startボタンクリックイベント
   start.addEventListener("click", () => {
     start.disabled = true;
     stop.disabled = false;
     start.classList.add("clear");
     stop.classList.remove("clear");
     reset.classList.remove("clear");
+    timer.classList.remove("finish");
 
     if (elapsedTime === 0) {
       initialTime = getTotalTime();
@@ -81,6 +116,7 @@
     } 
 
     const endTime = Date.now() + elapsedTime;
+    clearInterval(intervalId);
 
     intervalId = setInterval(() => {
       const timeout = endTime - Date.now();
@@ -89,8 +125,9 @@
         clearInterval(intervalId);
         updateDisplay(0);
         elapsedTime = 0;
-        start.disabled = true;
+        start.disabled = false;
         stop.disabled = true;
+        start.classList.remove("clear");
         stop.classList.add("clear");
         timer.classList.add("finish");
         audio.currentTime = 0;
@@ -103,6 +140,7 @@
     }, 100);
   });
 
+  //stopボタンクリックイベント
   stop.addEventListener("click", () => {
     clearInterval(intervalId);
     stop.disabled = true;
@@ -111,6 +149,7 @@
     stop.classList.add("clear");
   });
 
+  //resetボタンクリックイベント
   reset.addEventListener("click", () => {
     clearInterval(intervalId);
     elapsedTime = 0;
@@ -123,6 +162,7 @@
     timer.classList.remove("finish");
   });
 
+  //タイマー表示ディスプレイのクリックイベント
   timer.addEventListener("click", () => {
     clearInterval(intervalId);
     elapsedTime = 0;
@@ -131,6 +171,14 @@
     start.classList.remove("clear");
     timer.classList.remove("finish");
   });
-}
 
-//・stop中に数値の変更
+  //▲▼ボタンクリックイベント関数呼び出し
+  setupHold(secondsUp, 1);
+  setupHold(secondsDown,-1);
+
+  setupHold(minutesUp, 60);
+  setupHold(minutesDown,-60);
+  
+  setupHold(hoursUp, 3600);
+  setupHold(hoursDown,-3600);
+}
