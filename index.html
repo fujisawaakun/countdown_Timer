@@ -4,37 +4,102 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>カウントダウンタイマー</title>
+    <title>Document</title>
   </head>
-  <body>
+  <body id="bg">
     <main>
-      <div id="timer">
-        <input id="hours" type="number" min="0" value="00" />:
-        <input id="minutes" type="number" min="0" value="00" />:
-        <input id="seconds" type="number" min="0" value="00" />
-      </div>
+      <div class="timer-wrapper">
+        <svg class="ring" viewBox="0 0 220 220">
+          <circle class="ring-bg" cx="110" cy="110" r="100" />
+          <circle
+            id="progress"
+            class="ring-progress"
+            cx="110"
+            cy="110"
+            r="100"
+          />
+        </svg>
 
-      <div id="buttons">
-        <div id="hours-btn">
-          <button id="hours-up">▲</button>
-          <button id="hours-down">▼</button>
-        </div>
-        <div id="minutes-btn">
-          <button id="minutes-up">▲</button>
-          <button id="minutes-down">▼</button>
-        </div>
-        <div id="seconds-btn">
-          <button id="seconds-up">▲</button>
-          <button id="seconds-down">▼</button>
-        </div>
+        <p id="timer">0:00:00</p>
+        <button id="start">
+          <svg id="start-icon" viewBox="0 0 24 24">
+            <path id="start-icon-path" d="M8 5v14l11-7z" />
+          </svg>
+        </button>
+        <button id="reset">
+          <svg id="reset-icon" viewBox="0 0 24 24">
+            <path
+              id="reset-icon-path"
+              d="M12 5V2L8 6l4 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"
+            />
+          </svg>
+        </button>
       </div>
+      <img
+        src="setting-icon.svg"
+        id="setting-icon"
+        alt="歯車"
+        width="48px"
+        height="48px"
+      />
 
-      <button id="start">Start</button>
-      <div class="btn">
-        <button id="stop">Stop</button>
-        <button id="reset">Reset</button>
-      </div>
+      <!-- 設定画面 -->
+      <section id="setting-display" class="hidden">
+        <p>作業時間</p>
+        <div id="work-timer">
+          <input id="hours-work" type="number" min="0" value="00" />時間
+          <input id="minutes-work" type="number" min="0" value="00" />分
+          <input id="seconds-work" type="number" min="0" value="00" />秒
+        </div>
+        <div id="bgm-setting">
+          <p>作業時BGM</p>
+          <select name="workBGM" id="work-bgm-select">
+            <option value="workBGM/healing2.mp3">Forest</option>
+            <option value="workBGM/yume.mp3">piano</option>
+            <option value="workBGM/Crescent.mp3">jazz</option>
+          </select>
+          <div class="BGM-drop-area" id="work-BGM-drop-area">
+            作業用BGMをここにドラッグ&ドロップ
+          </div>
+        </div>
+
+        <p>インターバル</p>
+        <div id="rest-timer">
+          <input id="hours-rest" type="number" min="0" value="00" />時間
+          <input id="minutes-rest" type="number" min="0" value="00" />分
+          <input id="seconds-rest" type="number" min="0" value="00" />秒
+        </div>
+        <div id="bgm-setting">
+          <p>休憩時BGM</p>
+          <select name="restBGM" id="rest-bgm-select">
+            <option value="restBGM/チルアウト.mp3">chillout</option>
+            <option value="restBGM/seishishitauchu.mp3">orgel</option>
+            <option value="restBGM/Barely.mp3">Barely</option>
+          </select>
+          <div class="BGM-drop-area" id="rest-BGM-drop-area">
+            休憩用BGMをここにドラッグ&ドロップ
+          </div>
+        </div>
+
+        <p>セット数</p>
+        <input id="set-count" type="number" min="1" value="1" />セット
+
+        <p>音量</p>
+        <div id="volume-control">
+          <input
+            id="volume-slider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.5"
+          />
+          <span id="volume-value">50</span>
+        </div>
+      </section>
     </main>
+    <script src="ui.js"></script>
+    <script src="audio.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
